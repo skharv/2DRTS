@@ -25,6 +25,7 @@ func NewRender() *Render {
 func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 	screen.Fill(color.Black)
 
+	//Color selected
 	selection := w.View(
 		component.Selected{},
 		component.Color{},
@@ -42,6 +43,7 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 		}
 	}
 
+	//Draw Units
 	renders := w.View(
 		component.Position{},
 		component.Radius{},
@@ -55,6 +57,28 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 		e.Get(&pos, &rad, &col)
 
 		ebitenutil.DrawCircle(r.offscreen, pos.X, pos.Y, rad.R, col.C)
+	}
+
+	//Draw Cursor
+	cursor := w.View(
+		component.Position{},
+		component.Position{},
+		component.Color{},
+		component.Clicked{},
+	).Filter()
+
+	for _, e := range cursor {
+		var cli *component.Clicked
+		var col *component.Color
+		var srt *component.Position
+		var cur *component.Position
+		e.Get(&cli, &col, &srt, &cur)
+
+		if cli.C {
+			if cur.X != srt.X || cur.Y != srt.Y {
+				ebitenutil.DrawRect(screen, srt.X, srt.Y, cur.X-srt.X, cur.Y-srt.Y, col.C)
+			}
+		}
 	}
 
 	op := &ebiten.DrawImageOptions{}
