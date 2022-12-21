@@ -61,22 +61,20 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 
 	//Draw Cursor
 	cursor := w.View(
-		component.Position{},
-		component.Position{},
-		component.Color{},
 		component.Clicked{},
+		component.Color{},
+		component.Rectangle{},
 	).Filter()
 
 	for _, e := range cursor {
 		var cli *component.Clicked
 		var col *component.Color
-		var srt *component.Position
-		var cur *component.Position
-		e.Get(&cli, &col, &srt, &cur)
+		var rec *component.Rectangle
+		e.Get(&cli, &col, &rec)
 
-		if cli.C {
-			if cur.X != srt.X || cur.Y != srt.Y {
-				ebitenutil.DrawRect(screen, srt.X, srt.Y, cur.X-srt.X, cur.Y-srt.Y, col.C)
+		if cli.L {
+			if rec.W != 0 || rec.H != 0 {
+				ebitenutil.DrawRect(screen, rec.X, rec.Y, rec.W, rec.H, col.C)
 			}
 		}
 	}

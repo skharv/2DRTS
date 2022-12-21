@@ -7,4 +7,6 @@ type Unit struct {
 	component.Position
 	component.Radius
 	component.Selected
+	component.Speed
+	component.Target
 }
