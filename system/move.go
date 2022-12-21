@@ -23,7 +23,7 @@ func NewMove() *Move {
 }
 
 func (m *Move) Update(w engine.World) {
-
+	//Move away from others - prevents stacking
 	units := w.View(
 		component.Position{},
 		component.Radius{},
@@ -51,6 +51,7 @@ func (m *Move) Update(w engine.World) {
 		}
 	}
 
+	//Move to target
 	if num.Distance(m.Position.X, m.Position.Y, m.Target.X, m.Target.Y) >= m.Speed.S {
 		if m.Position.X != m.Target.X && m.Position.Y != m.Target.Y {
 			mx := m.Target.X - m.Position.X
