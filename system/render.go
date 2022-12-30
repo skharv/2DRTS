@@ -2,6 +2,7 @@ package system
 
 import (
 	"image/color"
+	"math"
 	"skharv/2DRTS/component"
 	"skharv/2DRTS/helper/globals"
 
@@ -62,17 +63,33 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 	//Draw Units
 	renders := w.View(
 		component.Color{},
+		component.Facing{},
 		component.Position{},
 		component.Radius{},
+		component.Target{},
 	).Filter()
 
 	for _, e := range renders {
 		var col *component.Color
+		var fac *component.Facing
 		var pos *component.Position
 		var rad *component.Radius
-		e.Get(&col, &pos, &rad)
+		var tar *component.Target
+		e.Get(&col, &fac, &pos, &rad, &tar)
 
 		ebitenutil.DrawCircle(r.offscreen, pos.X, pos.Y, rad.R, col.C)
+
+		if globals.Debug {
+			c := color.RGBA{255, 255, 255, 255}
+			//Line to Target
+			ebitenutil.DrawLine(r.offscreen, pos.X, pos.Y, tar.X, tar.Y, c)
+
+			//Line to Facing
+			fx := 50 * math.Sin(fac.F*math.Pi/180)
+			fy := 50 * math.Cos(fac.F*math.Pi/180)
+
+			ebitenutil.DrawLine(r.offscreen, pos.X, pos.Y, pos.X+fx, pos.Y+fy, c)
+		}
 	}
 
 	//Draw Cursor

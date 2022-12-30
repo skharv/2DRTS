@@ -2,6 +2,7 @@ package system
 
 import (
 	"skharv/2DRTS/component"
+	"skharv/2DRTS/helper/globals"
 	"skharv/2DRTS/helper/num"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -43,21 +44,29 @@ func (c *Cursor) Update(w engine.World) {
 	}
 
 	units := w.View(
+		component.Color{},
+		component.Owner{},
 		component.Position{},
 		component.Radius{},
-		component.Color{},
 		component.Selected{},
+		component.State{},
 		component.Target{},
 	).Filter()
 
 	for _, e := range units {
+		var col *component.Color
+		var own *component.Owner
 		var pos *component.Position
 		var rad *component.Radius
-		var col *component.Color
 		var sel *component.Selected
+		var sta *component.State
 		var tar *component.Target
 
-		e.Get(&pos, &rad, &col, &sel, &tar)
+		e.Get(&col, &own, &pos, &rad, &sel, &sta, &tar)
+
+		if own.O != globals.P1Owner {
+			continue
+		}
 
 		if c.Clicked.L {
 			if c.Rectangle.W != 0 || c.Rectangle.H != 0 {
@@ -86,6 +95,7 @@ func (c *Cursor) Update(w engine.World) {
 			rx, ry := ebiten.CursorPosition()
 			tar.X = float64(rx)
 			tar.Y = float64(ry)
+			sta.S = globals.Move
 		}
 	}
 }

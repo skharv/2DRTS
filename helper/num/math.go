@@ -2,6 +2,10 @@ package num
 
 import "math"
 
+type Point[T any] struct {
+	X, Y T
+}
+
 func Distance(p1x, p1y, p2x, p2y float64) float64 {
 	d := math.Pow(p2x-p1x, 2) + math.Pow(p2y-p1y, 2)
 	return math.Sqrt(d)
@@ -86,4 +90,17 @@ func PointInRectangle(px, py, rx, ry, rw, rh float64) bool {
 		}
 	}
 	return false
+}
+
+func AveragePoint(p ...Point[float64]) Point[float64] {
+	totalX, totalY := 0.0, 0.0
+	for _, v := range p {
+		totalX += v.X
+		totalY += v.Y
+	}
+
+	totalX /= float64(len(p))
+	totalY /= float64(len(p))
+
+	return Point[float64]{totalX, totalY}
 }
