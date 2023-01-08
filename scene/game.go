@@ -5,6 +5,7 @@ import (
 	"skharv/2DRTS/component"
 	"skharv/2DRTS/entity"
 	"skharv/2DRTS/helper/globals"
+	"skharv/2DRTS/helper/manager"
 	"skharv/2DRTS/prefabs"
 	"skharv/2DRTS/system"
 
@@ -15,6 +16,7 @@ type Game struct{}
 
 func (g *Game) Setup(w engine.World) {
 	w.AddComponents(
+		component.Chunk{},
 		component.Clicked{},
 		component.Color{},
 		component.Facing{},
@@ -29,15 +31,18 @@ func (g *Game) Setup(w engine.World) {
 		component.State{},
 		component.Target{},
 		component.TurnRate{},
+		component.Velocity{},
 		component.Weight{},
 	)
 
 	w.AddSystems(
+		system.NewAccelerate(),
+		system.NewChunkTransfer(),
 		system.NewCursor(),
 		system.NewFace(),
 		system.NewMove(),
 		system.NewRender(),
-		system.NewSelect(),
+		system.NewShove(),
 	)
 
 	w.AddEntities(
@@ -48,16 +53,23 @@ func (g *Game) Setup(w engine.World) {
 		},
 	)
 
-	entities := prefabs.Initialise()
+	entities := prefabs.Entities{}
 
-	for i := 0; i < 100; i++ {
-		x := float64(rand.Intn(globals.ScreenWidth))
-		y := float64(rand.Intn(globals.ScreenHeight))
+	for i := 0; i < 400; i++ {
+		x := rand.Intn(globals.ScreenWidth)
+		y := rand.Intn(globals.ScreenHeight)
 
-		if rand.Intn(2) < 1 {
-			w.AddEntities(entities.SpawnUnit("unitA", x, y, rand.Intn(2)))
-		} else {
-			w.AddEntities(entities.SpawnUnit("unitB", x, y, rand.Intn(2)))
+		switch rand.Intn(4) {
+		case 0:
+			w.AddEntities(entities.SpawnUnit("unitA", x, y, 1))
+		case 1:
+			w.AddEntities(entities.SpawnUnit("unitB", x, y, 1))
+		case 2:
+			w.AddEntities(entities.SpawnUnit("unitC", x, y, 1))
+		case 3:
+			w.AddEntities(entities.SpawnUnit("unitD", x, y, 1))
 		}
 	}
+
+	manager.InitialiseChunks(w)
 }

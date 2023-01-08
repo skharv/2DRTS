@@ -7,7 +7,7 @@ type Point[T any] struct {
 }
 
 func Distance(p1x, p1y, p2x, p2y float64) float64 {
-	d := math.Pow(p2x-p1x, 2) + math.Pow(p2y-p1y, 2)
+	d := ((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y))
 	return math.Sqrt(d)
 }
 

@@ -28,9 +28,9 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 	selection := w.View(
 		component.Color{},
 		component.Selected{},
-	).Filter()
+	)
 
-	for _, e := range selection {
+	selection.Each(func(e engine.Entity) {
 		var col *component.Color
 		var sel *component.Selected
 		e.Get(&col, &sel)
@@ -40,7 +40,7 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 		} else {
 			col.C = color.RGBA{255, 255, 255, 255}
 		}
-	}
+	})
 
 	//Draw Debug
 	if globals.Debug {
@@ -48,16 +48,16 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 			component.Color{},
 			component.NavMesh{},
 			component.Rectangle{},
-		).Filter()
+		)
 
-		for _, e := range navmeshRects {
+		navmeshRects.Each(func(e engine.Entity) {
 			var col *component.Color
 			var nav *component.NavMesh
 			var rec *component.Rectangle
 			e.Get(&col, &nav, &rec)
 
 			ebitenutil.DrawRect(r.offscreen, rec.X, rec.Y, rec.W, rec.H, col.C)
-		}
+		})
 	}
 
 	//Draw Units
@@ -67,9 +67,9 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 		component.Position{},
 		component.Radius{},
 		component.Target{},
-	).Filter()
+	)
 
-	for _, e := range renders {
+	renders.Each(func(e engine.Entity) {
 		var col *component.Color
 		var fac *component.Facing
 		var pos *component.Position
@@ -90,16 +90,16 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 
 			ebitenutil.DrawLine(r.offscreen, pos.X, pos.Y, pos.X+fx, pos.Y+fy, c)
 		}
-	}
+	})
 
 	//Draw Cursor
 	cursor := w.View(
 		component.Clicked{},
 		component.Color{},
 		component.Rectangle{},
-	).Filter()
+	)
 
-	for _, e := range cursor {
+	cursor.Each(func(e engine.Entity) {
 		var cli *component.Clicked
 		var col *component.Color
 		var rec *component.Rectangle
@@ -110,7 +110,7 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 				ebitenutil.DrawRect(screen, rec.X, rec.Y, rec.W, rec.H, col.C)
 			}
 		}
-	}
+	})
 
 	op := &ebiten.DrawImageOptions{}
 	op.Filter = ebiten.FilterNearest

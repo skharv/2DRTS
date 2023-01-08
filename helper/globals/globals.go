@@ -3,6 +3,7 @@ package globals
 const (
 	ScreenWidth  = 1024
 	ScreenHeight = 768
+	ChunkSize    = 32
 	Debug        = false
 	P1Owner      = 1
 )

@@ -3,6 +3,7 @@ package entity
 import "skharv/2DRTS/component"
 
 type Unit struct {
+	component.Chunk
 	component.Color
 	component.Facing
 	component.Id
@@ -14,5 +15,6 @@ type Unit struct {
 	component.State
 	component.Target
 	component.TurnRate
+	component.Velocity
 	component.Weight
 }

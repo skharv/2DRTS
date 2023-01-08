@@ -6,6 +6,6 @@ type Clicked struct {
 	M bool
 }
 
-func NewClicked(L, R, M bool) Clicked {
-	return Clicked{L, R, M}
+func NewClicked(l, r, m bool) Clicked {
+	return Clicked{l, r, m}
 }

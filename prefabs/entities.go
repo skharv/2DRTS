@@ -7,57 +7,67 @@ import (
 )
 
 type Entities struct {
-	Units   map[string]entity.Unit
 	counter int
 }
 
-func Initialise() *Entities {
-	e := Entities{map[string]entity.Unit{}, 0}
+func (e *Entities) SpawnUnit(name string, posX, posY, player int) *entity.Unit {
+	var radius = component.Radius{}
+	var speed = component.Speed{}
+	var turnRate = component.TurnRate{}
+	var weight = component.Weight{}
 
-	unitA := entity.Unit{
-		Color:    component.NewColor(255, 255, 255, 255),
-		Facing:   component.NewFacing(0),
-		Id:       component.NewId(0),
-		Owner:    component.NewOwner(0),
-		Position: component.NewPosition(0, 0),
-		Radius:   component.NewRadius(10),
-		Selected: component.NewSelected(false),
-		Speed:    component.NewSpeed(2),
-		State:    component.NewState(globals.Idle),
-		Target:   component.NewTarget(0, 0),
-		TurnRate: component.NewTurnRate(10),
-		Weight:   component.NewWeight(50),
+	switch name {
+	case "unitA":
+		radius = component.NewRadius(10)
+		speed = component.NewSpeed(2)
+		turnRate = component.NewTurnRate(10)
+		weight = component.NewWeight(50)
+	case "unitB":
+		radius = component.NewRadius(20)
+		speed = component.NewSpeed(1)
+		turnRate = component.NewTurnRate(5)
+		weight = component.NewWeight(150)
+	case "unitC":
+		radius = component.NewRadius(5)
+		speed = component.NewSpeed(1.5)
+		turnRate = component.NewTurnRate(15)
+		weight = component.NewWeight(300)
+	case "unitD":
+		radius = component.NewRadius(12)
+		speed = component.NewSpeed(0.75)
+		turnRate = component.NewTurnRate(20)
+		weight = component.NewWeight(75)
 	}
-	e.Units["unitA"] = unitA
 
-	unitB := entity.Unit{
-		Color:    component.NewColor(255, 255, 255, 255),
-		Facing:   component.NewFacing(0),
-		Id:       component.NewId(0),
-		Owner:    component.NewOwner(0),
-		Position: component.NewPosition(0, 0),
-		Radius:   component.NewRadius(20),
-		Selected: component.NewSelected(false),
-		Speed:    component.NewSpeed(1),
-		State:    component.NewState(globals.Idle),
-		Target:   component.NewTarget(0, 0),
-		TurnRate: component.NewTurnRate(5),
-		Weight:   component.NewWeight(150),
+	chunk := component.NewChunk(0, 0)
+	color := component.NewColor(255, 255, 255, 255)
+	facing := component.NewFacing(0)
+	id := component.NewId(e.counter)
+	owner := component.NewOwner(player)
+	position := component.NewPosition(float64(posX), float64(posY))
+	selected := component.NewSelected(false)
+	state := component.NewState(globals.Idle)
+	target := component.NewTarget(0, 0)
+	velocity := component.NewVelocity(0, 0)
+
+	unit := entity.Unit{
+		Chunk:    chunk,
+		Color:    color,
+		Facing:   facing,
+		Id:       id,
+		Owner:    owner,
+		Position: position,
+		Radius:   radius,
+		Selected: selected,
+		Speed:    speed,
+		State:    state,
+		Target:   target,
+		TurnRate: turnRate,
+		Velocity: velocity,
+		Weight:   weight,
 	}
-	e.Units["unitB"] = unitB
 
-	return &e
-}
-
-func (e *Entities) SpawnUnit(name string, posX, posY float64, owner int) *entity.Unit {
-	unit := e.Units[name]
-
-	unit.Id = component.NewId(e.counter)
 	e.counter++
-
-	unit.Position = component.NewPosition(posX, posY)
-
-	unit.Owner = component.NewOwner(owner)
 
 	return &unit
 }
