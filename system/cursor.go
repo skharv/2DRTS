@@ -43,18 +43,23 @@ func (c *Cursor) Update(w engine.World) {
 		c.Clicked.L = false
 	}
 
+	// var ctrlnam *component.Name
+	// var ctrlown *component.Owner
+
 	units := w.View(
 		component.Color{},
+		component.Name{},
 		component.Owner{},
 		component.Position{},
 		component.Radius{},
 		component.Selected{},
 		component.State{},
 		component.Target{},
-	).Filter()
+	)
 
-	for _, e := range units {
+	units.Each(func(e engine.Entity) {
 		var col *component.Color
+		var nam *component.Name
 		var own *component.Owner
 		var pos *component.Position
 		var rad *component.Radius
@@ -62,10 +67,10 @@ func (c *Cursor) Update(w engine.World) {
 		var sta *component.State
 		var tar *component.Target
 
-		e.Get(&col, &own, &pos, &rad, &sel, &sta, &tar)
+		e.Get(&col, &nam, &own, &pos, &rad, &sel, &sta, &tar)
 
 		if own.O != globals.P1Owner {
-			continue
+			return
 		}
 
 		if c.Clicked.L {
@@ -84,6 +89,10 @@ func (c *Cursor) Update(w engine.World) {
 				}
 			} else {
 				if num.Distance(pos.X, pos.Y, c.Rectangle.X, c.Rectangle.Y) < rad.R {
+					// if ebiten.IsKeyPressed(ebiten.KeyControl) {
+					// 	ctrlnam = nam
+					// 	ctrlown = own
+					// }
 					sel.S = true
 				} else {
 					sel.S = false
@@ -91,11 +100,38 @@ func (c *Cursor) Update(w engine.World) {
 			}
 		}
 
+		// if ctrlnam != nil && ctrlown != nil {
+		// 	if ebiten.IsKeyPressed(ebiten.KeyControl) {
+		// 		similar := w.View(
+		// 			component.Name{},
+		// 			component.Owner{},
+		// 			component.Selected{},
+		// 		)
+
+		// 		similar.Each(func(e engine.Entity) {
+		// 			var nam *component.Name
+		// 			var own *component.Owner
+		// 			var sel *component.Selected
+
+		// 			e.Get(&nam, &own, &sel)
+
+		// 			if own.O != ctrlown.O {
+		// 				return
+		// 			}
+		// 			if nam.N != ctrlnam.N {
+		// 				return
+		// 			}
+
+		// 			sel.S = true
+		// 		})
+		// 	}
+		// }
+
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonRight) && sel.S {
 			rx, ry := ebiten.CursorPosition()
 			tar.X = float64(rx)
 			tar.Y = float64(ry)
 			sta.S = globals.Move
 		}
-	}
+	})
 }

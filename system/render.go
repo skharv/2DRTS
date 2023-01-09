@@ -5,6 +5,7 @@ import (
 	"math"
 	"skharv/2DRTS/component"
 	"skharv/2DRTS/helper/globals"
+	"skharv/2DRTS/helper/num"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -43,20 +44,22 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 	})
 
 	//Draw Debug
-	if globals.Debug {
+	if globals.NavDebug {
 		navmeshRects := w.View(
 			component.Color{},
 			component.NavMesh{},
-			component.Rectangle{},
+			component.Triangle{},
 		)
 
 		navmeshRects.Each(func(e engine.Entity) {
 			var col *component.Color
 			var nav *component.NavMesh
-			var rec *component.Rectangle
-			e.Get(&col, &nav, &rec)
+			var tri *component.Triangle
+			e.Get(&col, &nav, &tri)
 
-			ebitenutil.DrawRect(r.offscreen, rec.X, rec.Y, rec.W, rec.H, col.C)
+			ebitenutil.DrawLine(r.offscreen, tri.A.X, tri.A.Y, tri.B.X, tri.B.Y, col.C)
+			ebitenutil.DrawLine(r.offscreen, tri.B.X, tri.B.Y, tri.C.X, tri.C.Y, col.C)
+			ebitenutil.DrawLine(r.offscreen, tri.C.X, tri.C.Y, tri.A.X, tri.A.Y, col.C)
 		})
 	}
 
@@ -76,6 +79,23 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 		var rad *component.Radius
 		var tar *component.Target
 		e.Get(&col, &fac, &pos, &rad, &tar)
+
+		if globals.NavDebug {
+			navmeshRects := w.View(
+				component.NavMesh{},
+				component.Triangle{},
+			)
+
+			navmeshRects.Each(func(e engine.Entity) {
+				var nav *component.NavMesh
+				var tri *component.Triangle
+				e.Get(&nav, &tri)
+
+				if num.PointInTriangle(num.Point[float64]{X: pos.X, Y: pos.Y}, tri.A, tri.B, tri.C) {
+					col.C = color.RGBA{0, 255, 0, 128}
+				}
+			})
+		}
 
 		ebitenutil.DrawCircle(r.offscreen, pos.X, pos.Y, rad.R, col.C)
 

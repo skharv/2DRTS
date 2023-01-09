@@ -2,8 +2,8 @@ package entity
 
 import "skharv/2DRTS/component"
 
-type NavmeshWalkableSpace struct {
+type WalkableSpace struct {
 	component.Color
 	component.NavMesh
-	component.Rectangle
+	component.Triangle
 }

@@ -29,16 +29,16 @@ func NewShove() *Shove {
 	return &s
 }
 
-func (m *Shove) Update(w engine.World) {
+func (s *Shove) Update(w engine.World) {
 	var nearby = []engine.Entity{}
 
 	for i := -1; i < 1; i++ {
-		x := m.Chunk.X + i
+		x := s.Chunk.X + i
 		if x < 0 || x > len(manager.Chunks) {
 			continue
 		}
 		for j := -1; j < 1; j++ {
-			y := m.Chunk.Y + j
+			y := s.Chunk.Y + j
 			if y < 0 || y > len(manager.Chunks[x]) {
 				continue
 			}
@@ -47,6 +47,10 @@ func (m *Shove) Update(w engine.World) {
 		}
 	}
 
+	s.Bump(nearby)
+}
+
+func (s *Shove) Bump(nearby []engine.Entity) {
 	for _, e := range nearby {
 		var id *component.Id
 		var pos *component.Position
@@ -57,26 +61,38 @@ func (m *Shove) Update(w engine.World) {
 
 		e.Get(&id, &pos, &rad, &spe, &vel, &wei)
 
-		if id.I == m.Id.I {
+		if id.I == s.Id.I {
 			continue
 		}
 
-		dist := num.Distance(m.Position.X, m.Position.Y, pos.X, pos.Y)
-		combinedSize := m.Radius.R + rad.R
+		dist := num.Distance(s.Position.X, s.Position.Y, pos.X, pos.Y)
+		combinedSize := s.Radius.R + rad.R
 
 		if dist <= combinedSize {
-			mx := pos.X - m.Position.X
-			my := pos.Y - m.Position.Y
+			mx := pos.X - s.Position.X
+			my := pos.Y - s.Position.Y
 			ang := math.Atan2(mx, my) + math.Pi
-			total := m.Weight.W + wei.W
+			total := s.Weight.W + wei.W
 			self := wei.W / total
-			other := m.Weight.W / total
+			other := s.Weight.W / total
 
-			m.Velocity.X += math.Sin(ang) * m.Speed.S * self
-			m.Velocity.Y += math.Cos(ang) * m.Speed.S * self
+			s.Velocity.X += math.Sin(ang) * s.Speed.S * self
+			s.Velocity.Y += math.Cos(ang) * s.Speed.S * self
 
-			vel.X += math.Sin(ang+math.Pi) * m.Speed.S * other
-			vel.Y += math.Cos(ang+math.Pi) * m.Speed.S * other
+			vel.X += math.Sin(ang+math.Pi) * s.Speed.S * other
+			vel.Y += math.Cos(ang+math.Pi) * s.Speed.S * other
 		}
 	}
+}
+
+func (s *Shove) Separation(nearby []engine.Entity) {
+
+}
+
+func (s *Shove) Alignment(nearby []engine.Entity) {
+
+}
+
+func (s *Shove) Cohesion(nearby []engine.Entity) {
+
 }

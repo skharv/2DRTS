@@ -67,7 +67,6 @@ func LineInCircle(cx, cy, cr, p1x, p1y, p2x, p2y float64) bool {
 }
 
 func PointInRectangle(px, py, rx, ry, rw, rh float64) bool {
-	//needs abs
 	minX := rx
 	maxX := rx + rw
 
@@ -90,6 +89,20 @@ func PointInRectangle(px, py, rx, ry, rw, rh float64) bool {
 		}
 	}
 	return false
+}
+
+func PointInTriangle(p, a, b, c Point[float64]) bool {
+	d1 := Sign(p, a, b)
+	d2 := Sign(p, b, c)
+	d3 := Sign(p, c, a)
+
+	neg := (d1 < 0) || (d2 < 0) || (d3 < 0)
+	pos := (d1 > 0) || (d2 > 0) || (d3 > 0)
+
+	return !(neg && pos)
+}
+func Sign(a, b, c Point[float64]) float64 {
+	return (a.X-c.X)*(b.Y-c.Y) - (b.X-c.X)*(a.Y-c.Y)
 }
 
 func AveragePoint(p ...Point[float64]) Point[float64] {
