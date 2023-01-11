@@ -25,6 +25,7 @@ func (g *Game) Setup(w engine.World) {
 		component.Name{},
 		component.NavMesh{},
 		component.Owner{},
+		component.Polygon{},
 		component.Position{},
 		component.Radius{},
 		component.Rectangle{},
@@ -57,44 +58,21 @@ func (g *Game) Setup(w engine.World) {
 		&entity.WalkableSpace{
 			Color:   component.NewColor(0, 255, 0, 128),
 			NavMesh: component.NewNavMesh(),
-			Triangle: component.NewTriangle(
+			Polygon: component.NewPolygon(
 				num.Point[float64]{X: 50, Y: 50},
-				num.Point[float64]{X: 200, Y: 100},
-				num.Point[float64]{X: 100, Y: 300},
-			),
-		},
-		&entity.WalkableSpace{
-			Color:   component.NewColor(0, 255, 0, 128),
-			NavMesh: component.NewNavMesh(),
-			Triangle: component.NewTriangle(
-				num.Point[float64]{X: 200, Y: 100},
 				num.Point[float64]{X: 100, Y: 300},
 				num.Point[float64]{X: 400, Y: 500},
-			),
-		},
-		&entity.WalkableSpace{
-			Color:   component.NewColor(0, 255, 0, 128),
-			NavMesh: component.NewNavMesh(),
-			Triangle: component.NewTriangle(
-				num.Point[float64]{X: 200, Y: 100},
-				num.Point[float64]{X: 400, Y: 500},
-				num.Point[float64]{X: 700, Y: 300},
-			),
-		},
-		&entity.WalkableSpace{
-			Color:   component.NewColor(0, 255, 0, 128),
-			NavMesh: component.NewNavMesh(),
-			Triangle: component.NewTriangle(
-				num.Point[float64]{X: 400, Y: 500},
-				num.Point[float64]{X: 700, Y: 300},
 				num.Point[float64]{X: 800, Y: 600},
+				num.Point[float64]{X: 800, Y: 400},
+				num.Point[float64]{X: 700, Y: 300},
+				num.Point[float64]{X: 200, Y: 100},
 			),
 		},
 	)
 
 	entities := prefabs.Entities{}
 
-	for i := 0; i < 400; i++ {
+	for i := 0; i < 1; i++ {
 		x := rand.Intn(globals.ScreenWidth)
 		y := rand.Intn(globals.ScreenHeight)
 

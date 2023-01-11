@@ -45,13 +45,13 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 
 	//Draw Debug
 	if globals.NavDebug {
-		navmeshRects := w.View(
+		navmeshTris := w.View(
 			component.Color{},
 			component.NavMesh{},
 			component.Triangle{},
 		)
 
-		navmeshRects.Each(func(e engine.Entity) {
+		navmeshTris.Each(func(e engine.Entity) {
 			var col *component.Color
 			var nav *component.NavMesh
 			var tri *component.Triangle
@@ -60,6 +60,27 @@ func (r *Render) Draw(w engine.World, screen *ebiten.Image) {
 			ebitenutil.DrawLine(r.offscreen, tri.A.X, tri.A.Y, tri.B.X, tri.B.Y, col.C)
 			ebitenutil.DrawLine(r.offscreen, tri.B.X, tri.B.Y, tri.C.X, tri.C.Y, col.C)
 			ebitenutil.DrawLine(r.offscreen, tri.C.X, tri.C.Y, tri.A.X, tri.A.Y, col.C)
+		})
+
+		navmeshPgon := w.View(
+			component.Color{},
+			component.NavMesh{},
+			component.Polygon{},
+		)
+
+		navmeshPgon.Each(func(e engine.Entity) {
+			var col *component.Color
+			var nav *component.NavMesh
+			var pol *component.Polygon
+			e.Get(&col, &nav, &pol)
+
+			for i, _ := range pol.P {
+				if i < len(pol.P)-1 {
+					ebitenutil.DrawLine(r.offscreen, pol.P[i].X, pol.P[i].Y, pol.P[i+1].X, pol.P[i+1].Y, col.C)
+				} else {
+					ebitenutil.DrawLine(r.offscreen, pol.P[i].X, pol.P[i].Y, pol.P[0].X, pol.P[0].Y, col.C)
+				}
+			}
 		})
 	}
 

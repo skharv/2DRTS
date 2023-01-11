@@ -5,7 +5,7 @@ const (
 	ScreenHeight = 768
 	ChunkSize    = 32
 	Debug        = false
-	NavDebug     = false
+	NavDebug     = true
 	P1Owner      = 1
 )
 

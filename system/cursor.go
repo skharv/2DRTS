@@ -85,7 +85,9 @@ func (c *Cursor) Update(w engine.World) {
 					c.Rectangle.H) {
 					sel.S = true
 				} else {
-					sel.S = false
+					if !ebiten.IsKeyPressed(ebiten.KeyShift) {
+						sel.S = false
+					}
 				}
 			} else {
 				if num.Distance(pos.X, pos.Y, c.Rectangle.X, c.Rectangle.Y) < rad.R {
@@ -95,7 +97,9 @@ func (c *Cursor) Update(w engine.World) {
 					// }
 					sel.S = true
 				} else {
-					sel.S = false
+					if !ebiten.IsKeyPressed(ebiten.KeyShift) {
+						sel.S = false
+					}
 				}
 			}
 		}
